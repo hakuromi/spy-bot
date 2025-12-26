@@ -56,3 +56,15 @@ func (m *Manager) Start() error {
 	m.Game.Active = true
 	return nil
 }
+
+func (m *Manager) GetRoles() map[int64]string {
+	roles := make(map[int64]string)
+	for _, player := range m.Game.Players {
+		if player.ID == m.Game.SpyID {
+			roles[player.ID] = "Шпион"
+		} else {
+			roles[player.ID] = "Вы не шпион. Персонаж: " + m.Game.Hero
+		}
+	}
+	return roles
+}
