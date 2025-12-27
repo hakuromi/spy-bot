@@ -44,8 +44,13 @@ func (m *Manager) chooseSpy() { // выбор шпиона рандомно
 }
 
 func (m *Manager) chooseHero() { // выбор героя рандомно
-	num := rand.Intn(len(models.Heroes))
-	m.Game.Hero = models.Heroes[num]
+	if m.Game.Mode == "clash" {
+		num := rand.Intn(len(models.Royale))
+		m.Game.Hero = models.Royale[num]
+	} else if m.Game.Mode == "dota" {
+		num := rand.Intn(len(models.Heroes))
+		m.Game.Hero = models.Heroes[num]
+	}
 }
 
 func (m *Manager) Start() error { //
@@ -71,9 +76,11 @@ func (m *Manager) GetRoles() map[int64]string {
 }
 
 func (m *Manager) End() {
-	m.Game.Active = false
-	m.Game.Hero = ""
-	m.Game.SpyID = 0
+	m.Game.Players = []models.Player{} // удаляем всех игроков
+	m.Game.Active = false              // игра неактивна
+	m.Game.Mode = ""                   // режим не выбран
+	m.Game.SpyID = 0                   // шпион очищен
+	m.Game.Hero = ""                   //герой очищен
 }
 
 func PlayerList(players []models.Player) string {

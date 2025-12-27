@@ -16,7 +16,7 @@ func HandleStart(bot *tgbotapi.BotAPI, chatID int64) {
 	bot.Send(msg)
 }
 
-func HandleNewGame(bot *tgbotapi.BotAPI, chatID int64, userID int64, username string, manager *game.Manager) {
+func HandleNewGame(bot *tgbotapi.BotAPI, chatID int64, userID int64, username string, manager *game.Manager, mode string) {
 	if len(manager.Game.Players) > 0 {
 		msg := tgbotapi.NewMessage(chatID, "игра уже существует!")
 		bot.Send(msg)
@@ -30,6 +30,7 @@ func HandleNewGame(bot *tgbotapi.BotAPI, chatID int64, userID int64, username st
 	}
 
 	manager.AddPlayer(player)
+	manager.Game.Mode = mode
 	message := "новая игра создана! \nадмин @" + username + ". зови друзей!"
 	msg := tgbotapi.NewMessage(chatID, message)
 	bot.Send(msg)
@@ -79,8 +80,11 @@ func HandleBegin(bot *tgbotapi.BotAPI, chatID int64, manager *game.Manager) {
 	}
 	manager.Start()
 
-	msg := tgbotapi.NewMessage(chatID, "стартуем!\n"+game.PlayerList(manager.Game.Players))
-	bot.Send(msg)
+	for _, p := range manager.Game.Players {
+		msg := tgbotapi.NewMessage(p.ID, "стартуем!\n"+game.PlayerList(manager.Game.Players))
+		bot.Send(msg)
+	}
+
 	roles := manager.GetRoles()
 	for userID, role := range roles {
 		msg := tgbotapi.NewMessage(userID, role)
