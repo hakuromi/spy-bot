@@ -5,4 +5,5 @@ type Game struct {
 	SpyID   int64
 	Hero    string
 	Active  bool
+	Mode    string
 }

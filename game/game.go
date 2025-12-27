@@ -2,6 +2,7 @@ package game
 
 import (
 	"errors"
+	"fmt"
 	"math/rand"
 
 	"github.com/hakuromi/spy-bot/models"
@@ -20,12 +21,12 @@ func (m *Manager) NewGame() { // создание игры
 
 func (m *Manager) AddPlayer(p models.Player) error { // добавление пользователя
 	if m.Game.Active {
-		return errors.New("Игра уже началась.")
+		return errors.New("игра уже началась.")
 	}
 
 	for _, player := range m.Game.Players {
 		if player.ID == p.ID {
-			return errors.New("Игрок уже в игре.")
+			return errors.New("игрок уже в игре.")
 		}
 	}
 	m.Game.Players = append(m.Game.Players, p)
@@ -37,17 +38,17 @@ func (m *Manager) CanStart() bool { // проверка количества и�
 	return len(m.Game.Players) >= 3
 }
 
-func (m *Manager) chooseSpy() {
+func (m *Manager) chooseSpy() { // выбор шпиона рандомно
 	num := rand.Intn(len(m.Game.Players))
 	m.Game.SpyID = m.Game.Players[num].ID
 }
 
-func (m *Manager) chooseHero() {
+func (m *Manager) chooseHero() { // выбор героя рандомно
 	num := rand.Intn(len(models.Heroes))
 	m.Game.Hero = models.Heroes[num]
 }
 
-func (m *Manager) Start() error {
+func (m *Manager) Start() error { //
 	if !m.CanStart() {
 		return errors.New("нужно минимум 3 игрока")
 	}
@@ -61,10 +62,27 @@ func (m *Manager) GetRoles() map[int64]string {
 	roles := make(map[int64]string)
 	for _, player := range m.Game.Players {
 		if player.ID == m.Game.SpyID {
-			roles[player.ID] = "Шпион"
+			roles[player.ID] = "вы шпион"
 		} else {
-			roles[player.ID] = "Вы не шпион. Персонаж: " + m.Game.Hero
+			roles[player.ID] = "вы не шпион. персонаж: " + m.Game.Hero
 		}
 	}
 	return roles
+}
+
+func (m *Manager) End() {
+	m.Game.Active = false
+	m.Game.Hero = ""
+	m.Game.SpyID = 0
+}
+
+func PlayerList(players []models.Player) string {
+	if len(players) == 0 {
+		return "никто еще не присоединился."
+	}
+	list := "игроки:\n"
+	for _, p := range players {
+		list += fmt.Sprintf("@%s\n", p.Name)
+	}
+	return list
 }
