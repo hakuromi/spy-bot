@@ -11,7 +11,7 @@ func main() {
 	var manager game.Manager
 	manager.NewGame()
 
-	botAPI := bot.Init("")
+	botAPI := bot.Init("8578620255:AAHIQsDmMdA33Kpryao6AOC3U8m7OCQKYiQ")
 	updates := bot.GetUpdates(botAPI)
 
 	log.Println("Бот запущен.")
@@ -22,11 +22,9 @@ func main() {
 			case "/start":
 				bot.HandleStart(botAPI, update.Message.Chat.ID)
 			case "[dota] создать игру":
-				bot.HandleNewGame(botAPI, update.Message.Chat.ID, update.Message.From.ID, update.Message.From.UserName, &manager)
-				manager.Game.Mode = "dota"
+				bot.HandleNewGame(botAPI, update.Message.Chat.ID, update.Message.From.ID, update.Message.From.UserName, &manager, "dota")
 			case "[clash royale] создать игру":
-				bot.HandleNewGame(botAPI, update.Message.Chat.ID, update.Message.From.ID, update.Message.From.UserName, &manager)
-				manager.Game.Mode = "clash"
+				bot.HandleNewGame(botAPI, update.Message.Chat.ID, update.Message.From.ID, update.Message.From.UserName, &manager, "clash")
 			case "присоединиться к игре":
 				bot.HandleJoin(botAPI, update.Message, &manager)
 			case "начать игру":
