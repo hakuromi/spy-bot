@@ -11,7 +11,7 @@ func main() {
 	var manager game.Manager
 	manager.NewGame()
 
-	botAPI := bot.Init("8578620255:AAHIQsDmMdA33Kpryao6AOC3U8m7OCQKYiQ")
+	botAPI := bot.Init("")
 	updates := bot.GetUpdates(botAPI)
 
 	log.Println("Бот запущен.")
